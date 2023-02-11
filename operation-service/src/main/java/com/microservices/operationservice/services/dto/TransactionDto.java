@@ -1,9 +1,9 @@
 package com.microservices.operationservice.services.dto;
 
 import com.microservices.operationservice.entities.TransactionType;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
-
 
 public class TransactionDto {
     private TransactionType transactionType;
@@ -64,12 +64,5 @@ public class TransactionDto {
     public TransactionDto() {
     }
 
-    @Override
-    public String toString() {
-        return "TransactionDto{" +
-                "transactionType=" + transactionType +
-                ", user_cin='" + user_cin + '\'' +
-                ", wallet_Ref='" + wallet_Ref + '\'' +
-                '}';
-    }
+
 }

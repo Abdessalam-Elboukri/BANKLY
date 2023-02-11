@@ -9,7 +9,7 @@ public class UserDto {
     private String password;
     private String phone;
 
-    private String test;
+
 
     public String getFirstname() {
         return firstname;
@@ -69,11 +69,4 @@ public class UserDto {
     }
     public  UserDto(){}
 
-
-    public String gettest() {
-        return test;
-    }
-    public void setTest(String test){
-        this.test=test;
-    }
 }

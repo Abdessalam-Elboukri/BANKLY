@@ -1,5 +1,6 @@
 package com.microservices.operationservice.controllers;
 
+
 import com.microservices.operationservice.services.TransactionService;
 import com.microservices.operationservice.services.dto.TransactionDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,15 +10,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/transaction/")
+@RequestMapping("/api/v1")
 public class TransactionController {
 
     @Autowired
     TransactionService transactionService;
 
-
-    @PostMapping("transacte")
+    @PostMapping("/transacte")
     public TransactionDto createTransaction(@RequestBody TransactionDto transactionDto) throws IllegalAccessException {
+
         return transactionService.save(transactionDto);
     }
 }

@@ -1,14 +1,19 @@
 package com.microservices.operationservice.services.Imp;
 import com.microservices.operationservice.entities.Transaction;
 import com.microservices.operationservice.entities.TransactionType;
+import com.microservices.operationservice.feign.UserService;
+import com.microservices.operationservice.feign.WalletService;
 import com.microservices.operationservice.repositories.TransactionRepository;
 import com.microservices.operationservice.services.TransactionService;
 import com.microservices.operationservice.services.dto.TransactionDto;
+import com.microservices.operationservice.services.dto.UserDto;
+import com.microservices.operationservice.services.dto.WalletDto;
 import com.microservices.operationservice.services.mapper.TransactionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class TransactionServiceImp implements TransactionService {
@@ -18,6 +23,15 @@ public class TransactionServiceImp implements TransactionService {
 
     @Autowired
     TransactionMapper transactionMapper;
+
+    public final UserService userService;
+    public final WalletService walletService;
+    public TransactionServiceImp(UserService userService , WalletService walletService) {
+        this.userService = userService;
+        this.walletService=walletService;
+    }
+
+
     @Override
     public TransactionDto save(TransactionDto transactionDto) throws IllegalAccessException {
         if(transactionDto == null){
@@ -31,24 +45,33 @@ public class TransactionServiceImp implements TransactionService {
             throw new IllegalAccessException("Error in Transaction info");
         }
         else{
-            Transaction transaction = transactionMapper.toEntity(transactionDto);
-            transaction.setDate(LocalDateTime.now());
-            Double testWallet=  10000.0;
-            if(transaction.getTransactionType()== TransactionType.DEPOSIT){
-                transaction.setNew_Sold(testWallet + transaction.getAmount());
-            }
-            else if(transaction.getTransactionType()==TransactionType.WITHDRAW){
-                if(testWallet < transaction.getAmount()){
-                    throw new IllegalAccessException("Your Amount is Unsifussant");
+                WalletDto walletDto = walletService.getByReference(transactionDto.getWallet_Ref());
+                UserDto userDto = userService.findByCin(transactionDto.getUser_cin());
+
+            if(walletDto == null || userDto==null ){
+                throw new IllegalAccessException("error in your Information");
+            }else {
+                Transaction transaction = transactionMapper.toEntity(transactionDto);
+                transaction.setDate(LocalDateTime.now());
+                Double walletBalance = walletDto.getSold() ;
+                if (transaction.getTransactionType() == TransactionType.DEPOSIT) {
+                    transaction.setNew_Sold(walletBalance + transaction.getAmount());
+                }else if (transaction.getTransactionType() == TransactionType.WITHDRAW) {
+                    if (walletBalance < transaction.getAmount()) {
+                        throw new IllegalAccessException("Your Amount is Insufficient ! Your balance : " + walletBalance);
+                    }else {
+                        transaction.setNew_Sold(walletBalance - transaction.getAmount());
+                        walletService.withdraw(transaction.getWallet_Ref(),transaction.getAmount());
+                    }
                 }
-                else{
-                    transaction.setNew_Sold(testWallet - transaction.getAmount());
-                }
+
+                transaction = transactionRepository.save(transaction);
+                return transactionMapper.toDto(transaction);
             }
-            transactionRepository.save(transaction);
-            return transactionMapper.toDto(transaction);
         }
     }
+
+
 
 
 
