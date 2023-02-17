@@ -7,6 +7,6 @@ public interface WalletService {
 
     WalletDto findByReference(String ref);
 
-    WalletDto withdraw(WalletDto walletDto) throws IllegalAccessException;
+    WalletDto updateBalance(WalletDto walletDto) throws IllegalAccessException;
 }
 

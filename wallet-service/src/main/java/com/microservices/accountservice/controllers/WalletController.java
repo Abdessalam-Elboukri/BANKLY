@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/v1/wallets")
 public class WalletController {
 
     @Autowired
@@ -15,7 +14,7 @@ public class WalletController {
 
     @PostMapping("/create_wallet")
     public WalletDto createWallet(@RequestBody WalletDto walletDto) throws IllegalAccessException {
-        System.out.println(walletDto.getSold());
+        System.out.println(walletDto.getUser_cin());
         return walletService.save(walletDto);
     }
 
@@ -29,11 +28,25 @@ public class WalletController {
         WalletDto walletDto1 = walletService.findByReference(ref);
         if(walletDto1==null){
             throw new IllegalAccessException("wallet not Found ! ");
-        }else{
+        }
+        if(walletDto1.getSold()<amount)
+            throw new IllegalAccessException("Insufficient Balance ! ");
+        else{
             walletDto1.setSold(walletDto1.getSold()-amount);
-            return walletService.withdraw(walletDto1);
+            return walletService.updateBalance(walletDto1);
         }
 
+    }
+
+    @PutMapping("/deposit/{ref}")
+    public WalletDto deposit(@PathVariable String ref, @RequestBody Double amount) throws IllegalAccessException {
+        WalletDto walletDto1 = walletService.findByReference(ref);
+        if(walletDto1==null){
+            throw new IllegalAccessException("wallet not Found ! ");
+        }else{
+            walletDto1.setSold(walletDto1.getSold()+amount);
+            return walletService.updateBalance(walletDto1);
+        }
     }
 
 }

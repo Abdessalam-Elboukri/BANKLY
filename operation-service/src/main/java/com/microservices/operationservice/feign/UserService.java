@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 //@Service
-@FeignClient(name = "gateway-service", url = "http://localhost:8081/api/v1")
+@FeignClient(name = "user-service")
 public interface UserService {
-    @GetMapping("/getall")
+    @GetMapping("/users/getall")
     List<UserDto> getAll();
 
-    @GetMapping("/findby_cin/{cin}")
+    @GetMapping("/users/findby_cin/{cin}")
     UserDto findByCin(@PathVariable String cin);
 
 }

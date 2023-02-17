@@ -50,12 +50,17 @@ public class TransactionServiceImp implements TransactionService {
 
             if(walletDto == null || userDto==null ){
                 throw new IllegalAccessException("error in your Information");
-            }else {
+            }
+            else if(!walletDto.getUser_cin().equalsIgnoreCase(transactionDto.getUser_cin())){
+                throw new IllegalAccessException("this wallet not belongs to the current User");
+            }
+            else {
                 Transaction transaction = transactionMapper.toEntity(transactionDto);
                 transaction.setDate(LocalDateTime.now());
                 Double walletBalance = walletDto.getSold() ;
                 if (transaction.getTransactionType() == TransactionType.DEPOSIT) {
                     transaction.setNew_Sold(walletBalance + transaction.getAmount());
+                    walletService.deposit(transaction.getWallet_Ref(),transaction.getAmount());
                 }else if (transaction.getTransactionType() == TransactionType.WITHDRAW) {
                     if (walletBalance < transaction.getAmount()) {
                         throw new IllegalAccessException("Your Amount is Insufficient ! Your balance : " + walletBalance);

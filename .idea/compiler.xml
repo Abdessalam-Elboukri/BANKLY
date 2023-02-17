@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="operation-service" />
         <module name="discovery-server" />
+        <module name="user-service" />
         <module name="account-service" />
         <module name="gateway-service" />
       </profile>
@@ -17,7 +18,10 @@
       <module name="account-service" target="11" />
       <module name="discovery-server" target="11" />
       <module name="gateway-service" target="11" />
+      <module name="gateway-service (1) (com.bankly)" target="11" />
       <module name="operation-service" target="11" />
+      <module name="user-service" target="11" />
+      <module name="users-service" target="11" />
       <module name="wallet-service" target="11" />
     </bytecodeTargetLevel>
   </component>
@@ -26,7 +30,10 @@
       <module name="account-service" options="-parameters" />
       <module name="discovery-server" options="-parameters" />
       <module name="gateway-service" options="-parameters" />
+      <module name="gateway-service (1) (com.bankly)" options="-parameters" />
       <module name="operation-service" options="-parameters" />
+      <module name="user-service" options="-parameters" />
+      <module name="users-service" options="-parameters" />
       <module name="wallet-service" options="-parameters" />
     </option>
   </component>

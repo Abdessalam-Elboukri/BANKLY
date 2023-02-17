@@ -25,11 +25,12 @@ public class WalletServiceImp implements WalletService {
         if(walletDto==null){
             throw new IllegalAccessException("An Error Occurred while the processing !");
         }
-        else if(walletDto.getUser_cin()==null || walletDto.getSold()<=0){
+        else if(walletDto.getUser_cin()==null){
             throw new IllegalAccessException("please Enter a valid information !");
         }
         else{
             Wallet wallet = walletMapper.toEntity(walletDto);
+            wallet.setSold((double) 0);
             wallet.setReference(UUID.randomUUID().toString());
             walletRepository.save(wallet);
             return walletMapper.toDto(wallet);
@@ -43,7 +44,7 @@ public class WalletServiceImp implements WalletService {
     }
 
     @Override
-    public WalletDto withdraw(WalletDto walletDto) throws IllegalAccessException {
+    public WalletDto updateBalance(WalletDto walletDto) throws IllegalAccessException {
         if(walletDto==null){
             throw new IllegalAccessException("An Error while completing the operation  ");
         }else{
